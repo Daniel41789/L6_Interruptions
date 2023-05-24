@@ -1,0 +1,24 @@
+{
+    "workbench.colorCustomizations": {
+        "activityBar.activeBackground": "#6ed120",
+        "activityBar.background": "#6ed120",
+        "activityBar.foreground": "#15202b",
+        "activityBar.inactiveForeground": "#15202b99",
+        "activityBarBadge.background": "#2274dd",
+        "activityBarBadge.foreground": "#e7e7e7",
+        "commandCenter.border": "#e7e7e799",
+        "sash.hoverBorder": "#6ed120",
+        "statusBar.background": "#57a519",
+        "statusBar.foreground": "#e7e7e7",
+        "statusBarItem.hoverBackground": "#6ed120",
+        "statusBarItem.remoteBackground": "#57a519",
+        "statusBarItem.remoteForeground": "#e7e7e7",
+        "titleBar.activeBackground": "#57a519",
+        "titleBar.activeForeground": "#e7e7e7",
+        "titleBar.inactiveBackground": "#57a51999",
+        "titleBar.inactiveForeground": "#e7e7e799"
+    },
+    "cSpell.language": "en,es-ES",
+    "peacock.color": "#57A519",
+    "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools"
+}
