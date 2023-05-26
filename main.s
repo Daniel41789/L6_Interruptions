@@ -42,9 +42,9 @@ __main:
         str     r1, [r0, GPIOx_CRH_OFFSET]      @ M[GPIOC_CRH] gets 0x33333333
 
         # set led status initial value     
-        add     r0, GPIOx_ODR_OFFSET            @ moves address of GPIOC_ODR register to r0
+        add     r0, GPIOB_BASE                  @ moves address of GPIOC_ODR register to r0
         mov     r1, 0x0
-        str     r1, [r7, #4]
+        str     r1, [r0, GPIOx_ODR_OFFSET]
 loop:   
         cmp     r1, 0x0                         @ if r1 equals zero then turn PC13 on
         bne     L1                              @ else, turns PC13 off
