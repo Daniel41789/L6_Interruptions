@@ -116,6 +116,11 @@ __main:
         ldr     r1, =0x44484448                 @ this constant signals the reset state
         str     r1, [r0, GPIOx_CRL_OFFSET]      @ M[GPIOC_CRL] gets 0x44484448
 
+        # set pin PB6 and PB7 as digital output
+        ldr     r0, =GPIOB_BASE
+        ldr     r1, =0x33444444                 @ PC13: output push-pull, max speed 50 MHz
+        str     r1, [r0, GPIOx_CRL_OFFSET]      @ M[GPIOC_CRH] gets 0x33444444
+
         # set pin PB8-PB15 as digital output
         ldr     r0, =GPIOB_BASE
         ldr     r1, =0x33333333                 @ PC13: output push-pull, max speed 50 MHz
@@ -165,7 +170,7 @@ L6:
         ldr r0, =GPIOB_BASE                     
         ldr r1, [r7, #4]                        @ r1 <-- counter
         mov r2, r1                              @ r2 <-- r1 
-        lsl r2, r2, #8                          @ counter << 8
+        lsl r2, r2, #6                          @ counter << 8
         str r2, [r0, GPIOx_ODR_OFFSET]
         ldr r0, [r7, #8]                        @ r0 <-- ms
         bl wait_ms                              @ jump to wait_ms function
