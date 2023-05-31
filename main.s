@@ -18,10 +18,45 @@ speed:
         sub sp, sp, #4                          @ reserves a 4 bytes function frame
         add r7, sp, #0
         # Function Body
-        // Compare
+        cmp r10, #1
         bne L1
-        
+        mov r0, #1000
+        adds r7, r7, #4
+        mov sp, r7
+        pop {r7}
+        bx lr
 L1: 
+        cmp r10, #2
+        bne L2
+        mov r0, #500
+        adds r7, r7, #4
+        mov sp, r7
+        pop {r7}
+        bx lr
+L2:
+        cmp r10, #3
+        bne L3
+        mov r0, #250
+        adds r7, r7, #4
+        mov sp, r7
+        pop {r7}
+        bx lr
+L3:
+        cmp r10, #4
+        bne L4
+        mov r0, #125
+        adds r7, r7, #4
+        mov sp, r7
+        pop {r7}
+        bx lr
+L4:
+        mov r10, #1
+        # Epilogue
+        mov r0, #1000
+        adds r7, r7, #4
+        mov sp, r7
+        pop {r7}
+        bx lr
 
 decrement:
         # Prologue
@@ -90,9 +125,9 @@ __main:
         mov r1, #0
         ldr r1, [r0, AFIO_EXTICR1_OFFSET]
         ldr r0, =EXTI_BASE
-        mov r1, #0
+        ldr r1, =0x11                           @ 00010001
         str r1, [r0, EXTI_FTST_OFFSET]
-        ldr r1, =0x11
+        mov r1, #0
         str r1, [r0, EXTI_RTST_OFFSET]
         str r1, [r0, EXTI_IMR_OFFSET]
         ldr r0, =NVIC_BASE
@@ -103,19 +138,35 @@ __main:
         ldr     r0, =GPIOB_BASE                  @ moves address of GPIOC_ODR register to r0
         mov     r1, 0x0
         str     r1, [r0, GPIOx_ODR_OFFSET]
-        mov r1, #0                              @ counter <-- 0
-        str r1, [r7, #4]                        @ Store counter
-
+        mov r1, #0                               @ counter <-- 0
+        str r1, [r7, #4]                         @ Store counter
+        mov r8, #1                               @ counter status <-- increase
+        mov r1, #1000                            @ delay <-- 1000ms
+        str r1, [r7, #8]                         @ store ms
+        mov r10, #1                              @ r10 <-- speed
 
 loop:   
         # Counter 0 or 1
-        bl speed
-        // Compare status counter
-        bne L5
-        ldr r0, [r7, #4]
-        bl increase
-        str r0, [r7, #4]
-        b L6
+        bl speed                                @ jump to speed function
+        str r0, [r7, #8]                        @ store ms
+        # Compare counter status
+        cmp r8, #1                              @ compare r8 with 1
+        bne L5                                  @ branch if r8 not equal 1 to L5
+        ldr r0, [r7, #4]                        @ r0 <-- counter
+        bl increase                             @ jump to increase function
+        str r0, [r7, #4]                        @ store return of increase function in counter
+        b L6                                    @ jump to L6
 L5:
+        ldr r0, [r7, #4]                        @ r0 <-- counter
+        bl decrement                            @ jump to decrement function
+        str r0, [r7, #4]                        @ store return of decrement function in counter
 L6:
-b loop
+        # Turn LEDs ON 
+        ldr r0, =GPIOB_BASE                     
+        ldr r1, [r7, #4]                        @ r1 <-- counter
+        mov r2, r1                              @ r2 <-- r1 
+        lsl r2, r2, #8                          @ counter << 8
+        str r2, [r0, GPIOx_ODR_OFFSET]
+        ldr r0, [r7, #8]                        @ r0 <-- ms
+        bl wait_ms                              @ jump to wait_ms function
+        b loop                                  @ jump to loop
