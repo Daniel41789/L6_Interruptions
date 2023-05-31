@@ -27,6 +27,6 @@ Ini_SysTick:
 
 .global SysTick_Handler
 SysTick_Handler:
-    sub r10, r10, #1
+    sub r11, r11, #1
     bx lr
 .size   SysTick_Handler, .-SysTick_Handler
