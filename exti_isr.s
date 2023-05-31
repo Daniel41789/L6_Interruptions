@@ -23,3 +23,4 @@ EXTI4_Handler:
     orr     r1, r1, 0x400
     str     r1, [r0, EXTI_PR_OFFSET]
     bx      lr
+    

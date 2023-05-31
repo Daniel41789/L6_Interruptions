@@ -8,5 +8,5 @@ wait_ms:
 loop: 
         cmp r11, #0
         bne loop
-        bx lapers
+        bx lr
 .size   wait_ms, .-wait_ms

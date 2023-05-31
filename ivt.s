@@ -13,7 +13,10 @@
 @ DO NOT FORGET USE +1 SHIFT FOR ADDRESS ON THUMB
 @ Thumb mode requieres the LSB equals one
 
+.extern EXTI0_Handler
+.extern EXTI4_Handler
 .extern Reset_Handler
+.extern SysTick_Handler
 .extern Default_Handler
 .section .isr_vector
 
