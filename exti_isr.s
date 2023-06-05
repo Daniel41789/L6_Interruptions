@@ -6,21 +6,34 @@
 .align	1
 .syntax unified
 .thumb
-.global EXTI0_Handler
-EXTI0_Handler:
-    adds    r10, r10, #1
+.global EXTI_Handler
+EXTI_Handler:
+    ldr r0, =EXTI_BASE
+    ldr r1, [r0, EXTI_PR_OFFSET]
+    ldr r0, =0x40
+    cmp r1, r0
+    beq EXTI6_Handler
+    ldr r0, =EXTI_BASE
+    ldr r1, [r0, EXTI_PR_OFFSET]
+    ldr r0, =0x80
+    cmp r1, r0
+    beq EXTI7_Handler
+    bx lr
+
+EXTI6_Handler:
+    adds    r5, r5, #1
     ldr     r0, =EXTI_BASE
     ldr     r1, [r0, EXTI_PR_OFFSET]
     orr     r1, r1, 0x40
     str     r1, [r0, EXTI_PR_OFFSET]
     bx      lr
 
-.global EXTI4_Handler
-EXTI4_Handler:
-    eor     r8, r8, #1
+EXTI7_Handler:
+    eor     r4, r4, #1
+    and     r4, r4, #1
     ldr     r0, =EXTI_BASE
     ldr     r1, [r0, EXTI_PR_OFFSET]
-    orr     r1, r1, 0x400
+    orr     r1, r1, 0x80
     str     r1, [r0, EXTI_PR_OFFSET]
     bx      lr
     

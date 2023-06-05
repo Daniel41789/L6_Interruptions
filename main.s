@@ -18,7 +18,7 @@ speed:
         sub sp, sp, #4                          @ reserves a 4 bytes function frame
         add r7, sp, #0
         # Function Body
-        cmp r10, #1
+        cmp r5, #1
         bne L1
         mov r0, #1000
         adds r7, r7, #4
@@ -26,7 +26,7 @@ speed:
         pop {r7}
         bx lr
 L1: 
-        cmp r10, #2
+        cmp r5, #2
         bne L2
         mov r0, #500
         adds r7, r7, #4
@@ -34,7 +34,7 @@ L1:
         pop {r7}
         bx lr
 L2:
-        cmp r10, #3
+        cmp r5, #3
         bne L3
         mov r0, #250
         adds r7, r7, #4
@@ -42,7 +42,7 @@ L2:
         pop {r7}
         bx lr
 L3:
-        cmp r10, #4
+        cmp r5, #4
         bne L4
         mov r0, #125
         adds r7, r7, #4
@@ -50,7 +50,7 @@ L3:
         pop {r7}
         bx lr
 L4:
-        mov r10, #1
+        mov r5, #1
         # Epilogue
         mov r0, #1000
         adds r7, r7, #4
@@ -105,7 +105,7 @@ __main:
         push {r7, lr}
         sub sp, sp, #16
         add r7, sp, #0
-
+        bl Ini_SysTick
         # enabling clock in port A, B and C
         ldr     r0, =RCC_BASE
         mov     r1, 0x1C                        @ loads 16 in r1 to enable clock in port C (IOPC bit)
@@ -116,22 +116,25 @@ __main:
         ldr     r1, =0x44484448                 @ this constant signals the reset state
         str     r1, [r0, GPIOx_CRL_OFFSET]      @ M[GPIOC_CRL] gets 0x44484448
 
-        # set pin PB6 and PB7 as digital output
+        # set pin PB5, PB6 and PB7 as digital output
         ldr     r0, =GPIOB_BASE
-        ldr     r1, =0x33444444                 @ PC13: output push-pull, max speed 50 MHz
-        str     r1, [r0, GPIOx_CRL_OFFSET]      @ M[GPIOC_CRH] gets 0x33444444
+        ldr     r1, =0x33344444                 @ PC13: output push-pull, max speed 50 MHz
+        str     r1, [r0, GPIOx_CRL_OFFSET]      @ M[GPIOC_CRH] gets 0x33344444
 
-        # set pin PB8-PB15 as digital output
+        # set pin PB8-PB14 as digital output
         ldr     r0, =GPIOB_BASE
-        ldr     r1, =0x33333333                 @ PC13: output push-pull, max speed 50 MHz
-        str     r1, [r0, GPIOx_CRH_OFFSET]      @ M[GPIOC_CRH] gets 0x33333333
+        ldr     r1, =0x43333333                 @ PC13: output push-pull, max speed 50 MHz
+        str     r1, [r0, GPIOx_CRH_OFFSET]      @ M[GPIOC_CRH] gets 0x43333333
 
         ldr r0, =AFIO_BASE
-        mov r1, #0
-        ldr r1, [r0, AFIO_EXTICR1_OFFSET]
+        eor r1, r1
+        str r1, [r0, AFIO_EXTICR1_OFFSET]
+        str r1, [r0, AFIO_EXTICR2_OFFSET]
+
         ldr r0, =EXTI_BASE
         ldr r1, =0x11                           @ 00010001
         str r1, [r0, EXTI_FTST_OFFSET]
+        ldr r1, =0x0
         mov r1, #0
         str r1, [r0, EXTI_RTST_OFFSET]
         str r1, [r0, EXTI_IMR_OFFSET]
@@ -145,17 +148,20 @@ __main:
         str     r1, [r0, GPIOx_ODR_OFFSET]
         mov r1, #0                               @ counter <-- 0
         str r1, [r7, #4]                         @ Store counter
-        mov r8, #1                               @ counter status <-- increase
+
+        mov r4, #1                               @ counter status <-- increase
+
         mov r1, #1000                            @ delay <-- 1000ms
         str r1, [r7, #8]                         @ store ms
-        mov r10, #1                              @ r10 <-- speed
+
+        mov r5, #1                               @ r10 <-- speed
 
 loop:   
         # Counter 0 or 1
         bl speed                                @ jump to speed function
         str r0, [r7, #8]                        @ store ms
         # Compare counter status
-        cmp r8, #1                              @ compare r8 with 1
+        cmp r4, #1                              @ compare r8 with 1
         bne L5                                  @ branch if r8 not equal 1 to L5
         ldr r0, [r7, #4]                        @ r0 <-- counter
         bl increase                             @ jump to increase function
@@ -170,7 +176,7 @@ L6:
         ldr r0, =GPIOB_BASE                     
         ldr r1, [r7, #4]                        @ r1 <-- counter
         mov r2, r1                              @ r2 <-- r1 
-        lsl r2, r2, #6                          @ counter << 8
+        lsl r2, r2, #5                          @ counter << 8
         str r2, [r0, GPIOx_ODR_OFFSET]
         ldr r0, [r7, #8]                        @ r0 <-- ms
         bl wait_ms                              @ jump to wait_ms function

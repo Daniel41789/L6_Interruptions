@@ -4,9 +4,9 @@
 .thumb
 .global wait_ms
 wait_ms:
-        mov r11, r0
+        mov r10, r0
 loop: 
-        cmp r11, #0
+        cmp r10, #0
         bne loop
         bx lr
 .size   wait_ms, .-wait_ms
