@@ -133,7 +133,7 @@ __main:
         ldr r0, =EXTI_BASE
         eor r1, r1
         str r1, [r0, EXTI_FTST_OFFSET]
-        ldr r1, =(0x3 << 5)
+        ldr r1, =(0x3 << 6)
         str r1, [r0, EXTI_RTST_OFFSET]
         str r1, [r0, EXTI_IMR_OFFSET]
         ldr r0, =NVIC_BASE
