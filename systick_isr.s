@@ -12,7 +12,7 @@ Ini_SysTick:
     ldr r0 , =SYSTICK_BASE
     mov r1, #0
     str r1, [r0, #STK_CTRL_OFFSET]
-    ldr r2, =7999
+    ldr r2, =7999 @ el reloj interno del microcontrolado va a 8mhz se ajusta a este valor para generar el retraso de 1ms
     str r2, [r0, #STK_LOAD_OFFSET] 
     mov r1, #0
     str r1, [r0, #STK_VAL_OFFSET]
