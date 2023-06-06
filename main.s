@@ -131,11 +131,11 @@ __main:
         str r1, [r0, AFIO_EXTICR2_OFFSET]
         # Configuración del disparador
         ldr r0, =EXTI_BASE
-        eor r1, r1
-        str r1, [r0, EXTI_FTST_OFFSET]
-        ldr r1, =(0x3 << 6)
-        str r1, [r0, EXTI_RTST_OFFSET]
-        str r1, [r0, EXTI_IMR_OFFSET]
+        eor r1, r1                              @ Limpieza del registro
+        str r1, [r0, EXTI_FTST_OFFSET]          @ Desactivamos el flanco de bajada
+        ldr r1, =(0x3 << 6)                     @ Activación de PR de 6 y 7 y habilitación del flanco de subida
+        str r1, [r0, EXTI_RTST_OFFSET]          @ Flanco de subida
+        str r1, [r0, EXTI_IMR_OFFSET]           
         ldr r0, =NVIC_BASE
         ldr r1, =(0x1 << 23)                    @ habilitación de EXTI Line[9:5]
         str r1, [r0, NVIC_ISER0_OFFSET]
